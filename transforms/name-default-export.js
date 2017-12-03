@@ -75,7 +75,12 @@ module.exports = function(file, api) {
 		src
 			.find(j.FunctionDeclaration, { id: { name } }) // see if the prop is a function
 			.filter(declaration => declaration.parent.value.type === "Program") // can only export top-level things
-			.replaceWith(declaration => j.exportNamedDeclaration(declaration.value));
+			.replaceWith(declaration => {
+				const exportDeclaration = j.exportNamedDeclaration(declaration.value);
+				exportDeclaration.comments = declaration.value.comments;
+				declaration.value.comments = [];
+				return exportDeclaration;
+			});
 	});
 
 	// handle already declared variables
@@ -86,9 +91,18 @@ module.exports = function(file, api) {
 			.map(node => node.parent) // since we need to put export before the whole construct we need the parent which contains the const as well
 			.filter(declaration => declaration.parent.value.type === "Program") // can only export top-level things
 			.replaceWith(variableDeclaration => {
-				const declarations = variableDeclaration.value.declarations.map(declaration =>
-					createNamedExport(j, declaration.id.name, declaration.init)
-				);
+				let shouldPrintComments = true;
+				const declarations = variableDeclaration.value.declarations.map(declaration => {
+					const namedExport = createNamedExport(j, declaration.id.name, declaration.init);
+
+					// super edgecasey. if defining multiple vars, only print the groups comments once
+					if (shouldPrintComments) {
+						namedExport.comments = variableDeclaration.value.comments;
+						shouldPrintComments = false;
+					}
+
+					return namedExport;
+				});
 				return declarations;
 			});
 	});

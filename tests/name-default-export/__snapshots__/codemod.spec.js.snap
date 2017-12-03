@@ -50,6 +50,25 @@ const chickens = \\"chicken\\";
 "
 `;
 
+exports[`has-comments.js 1`] = `
+"/**
+ * Returns a
+ */
+export function a() {
+	return \\"a\\";
+}
+
+// returns b
+export const b = () => \\"b\\";
+
+// c
+export const c = \\"c\\"; // and d
+
+export const d = \\"c\\";
+
+"
+`;
+
 exports[`literal-keys.js 1`] = `""`;
 
 exports[`many-identifiers-with-colon.js 1`] = `

@@ -1,0 +1,12 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`basic.js 1`] = `
+"export const a = 4;
+
+export const b = function() {
+const chickens = \\"chicken\\";
+// do more things
+};
+
+"
+`;

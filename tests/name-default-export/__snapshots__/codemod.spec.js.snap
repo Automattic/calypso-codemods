@@ -11,7 +11,7 @@ export const a = 42;
 `;
 
 exports[`already-declared-variable.js 1`] = `
-"const b = function() {
+"export const b = function() {
 	const chicken = \\"chicken\\";
 };
 
@@ -51,5 +51,13 @@ const chickens = \\"chicken\\";
 `;
 
 exports[`literal-keys.js 1`] = `""`;
+
+exports[`many-identifiers-with-colon.js 1`] = `
+"export const a = \\"a\\";
+export const b = \\"b\\";
+export const c = arg => arg;
+
+"
+`;
 
 exports[`scary-properties.js 1`] = `""`;

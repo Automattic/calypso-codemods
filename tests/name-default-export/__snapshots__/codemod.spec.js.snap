@@ -1,0 +1,93 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`already-declared-function.js 1`] = `
+"export function b() {
+	const chicken = \\"chicken\\";
+}
+
+export const a = 42;
+
+"
+`;
+
+exports[`already-declared-variable.js 1`] = `
+"export const b = function() {
+	const chicken = \\"chicken\\";
+};
+
+export const a = 42;
+
+"
+`;
+
+exports[`already-exported-function.js 1`] = `
+"export function b() {
+	const chicken = \\"chicken\\";
+}
+export const a = 42;
+
+"
+`;
+
+exports[`already-exported-variable.js 1`] = `
+"export const b = function() {
+	const chicken = \\"chicken\\";
+};
+
+export const a = 42;
+
+"
+`;
+
+exports[`basic.js 1`] = `
+"export const a = 4;
+
+export const b = function() {
+const chickens = \\"chicken\\";
+// do more things
+};
+
+"
+`;
+
+exports[`has-comments.js 1`] = `
+"/**
+ * Returns a
+ */
+export function a() {
+	return \\"a\\";
+}
+
+// returns b
+export const b = () => \\"b\\";
+
+// c
+export const c = \\"c\\"; // and d
+
+export const d = \\"c\\";
+
+"
+`;
+
+exports[`literal-keys.js 1`] = `""`;
+
+exports[`many-identifiers-with-colon.js 1`] = `
+"export const a = \\"a\\";
+export const b = \\"b\\";
+export const c = arg => arg;
+
+"
+`;
+
+exports[`nested-func.js 1`] = `
+"export function b() {
+	const c = \\"fail\\";
+}
+
+export const c = \\"the real c\\";
+export const a = 42;
+
+"
+`;
+
+exports[`scary-properties.js 1`] = `""`;

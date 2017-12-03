@@ -1,7 +1,17 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
-exports[`already-declared.js 1`] = `
-"export const b = function() {
+exports[`already-declared-function.js 1`] = `
+"export function b() {
+	const chicken = \\"chicken\\";
+}
+
+export const a = 42;
+
+"
+`;
+
+exports[`already-declared-variable.js 1`] = `
+"const b = function() {
 	const chicken = \\"chicken\\";
 };
 
@@ -10,7 +20,16 @@ export const a = 42;
 "
 `;
 
-exports[`already-exported.js 1`] = `
+exports[`already-exported-function.js 1`] = `
+"export function b() {
+	const chicken = \\"chicken\\";
+}
+export const a = 42;
+
+"
+`;
+
+exports[`already-exported-variable.js 1`] = `
 "export const b = function() {
 	const chicken = \\"chicken\\";
 };

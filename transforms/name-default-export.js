@@ -71,12 +71,23 @@ module.exports = function(file, api) {
 	alreadyDeclaredProperties.forEach(property => {
 		const name = property.key.name;
 		src
-			.findVariableDeclarators(name) // the [declarator] is const [declarator1,declarator2];
-			.map(node => node.parent) // since we need to put export before the whole construct we need the parent which contains the const as well
+			.find(j.Declaration, { id: { name } })
 			.filter(declaration => declaration.parent.value.type !== "ExportNamedDeclaration") // skip if already being exported
-			.replaceWith(variableDeclaration => {
-				const declarations = variableDeclaration.value.declarations.map(declaration =>
-					createNamedExport(j, declaration.id.name, declaration.init)
+			.filter(
+				declaration =>
+					declaration.value.type === "FunctionDeclaration" ||
+					declaration.value.type === "VariableDeclaration"
+			)
+			.replaceWith(declaration => {
+				// if a function, then just prepend export
+				if (declaration.value.type === "FunctionDeclaration") {
+					return j.exportNamedDeclaration(declaration.value);
+				}
+
+				// if a variable declaration, then may need to deal with multiple variables
+				// i.e. const a = 5, b = 6;
+				const declarations = declaration.map(declarator =>
+					createNamedExport(j, declarator.id.name, declarator.init)
 				);
 				return declarations;
 			});

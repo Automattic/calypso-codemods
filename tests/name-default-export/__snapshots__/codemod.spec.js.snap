@@ -60,4 +60,15 @@ export const c = arg => arg;
 "
 `;
 
+exports[`nested-func.js 1`] = `
+"export function b() {
+	const c = \\"fail\\";
+}
+
+export const c = \\"the real c\\";
+export const a = 42;
+
+"
+`;
+
 exports[`scary-properties.js 1`] = `""`;

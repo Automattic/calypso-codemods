@@ -73,7 +73,7 @@ module.exports = function(file, api) {
 		const name = property.key.name;
 		src
 			.find(j.FunctionDeclaration, { id: { name } }) // see if the prop is a function
-			.filter(declaration => declaration.parent.value.type !== "ExportNamedDeclaration") // skip if already being exported
+			.filter(declaration => declaration.parent.value.type === "Program") // can only export top-level things
 			.replaceWith(declaration => j.exportNamedDeclaration(declaration.value));
 	});
 
@@ -83,7 +83,7 @@ module.exports = function(file, api) {
 		src
 			.findVariableDeclarators(name) // the [declarator] is const [declarator1,declarator2];
 			.map(node => node.parent) // since we need to put export before the whole construct we need the parent which contains the const as well
-			.filter(declaration => declaration.parent.value.type !== "ExportNamedDeclaration") // skip if already being exported
+			.filter(declaration => declaration.parent.value.type === "Program") // can only export top-level things
 			.replaceWith(variableDeclaration => {
 				const declarations = variableDeclaration.value.declarations.map(declaration =>
 					createNamedExport(j, declaration.id.name, declaration.init)

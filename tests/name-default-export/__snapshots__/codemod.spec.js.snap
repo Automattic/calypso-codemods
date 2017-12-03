@@ -1,5 +1,25 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`already-declared.js 1`] = `
+"export const b = function() {
+	const chicken = \\"chicken\\";
+};
+
+export const a = 42;
+
+"
+`;
+
+exports[`already-exported.js 1`] = `
+"export const b = function() {
+	const chicken = \\"chicken\\";
+};
+
+export const a = 42;
+
+"
+`;
+
 exports[`basic.js 1`] = `
 "export const a = 4;
 
@@ -10,3 +30,7 @@ const chickens = \\"chicken\\";
 
 "
 `;
+
+exports[`literal-keys.js 1`] = `""`;
+
+exports[`scary-properties.js 1`] = `""`;

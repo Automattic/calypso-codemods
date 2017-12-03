@@ -8,10 +8,26 @@ const getDefaultExport = (j, src) => {
 		: false;
 };
 
-// const getNamedExports = (j, src) => {
-// 	const namedExportsCollection = src.find(j.ExportNamedDeclaration);
-// 	return namedExportsCollection.nodes();
-// };
+// if the file has scary things in the default export, lets skip the transform
+const scaryStuff = new Set([
+	"componentWillUpdate",
+	"componentWillMount",
+	"componentWillUnmount",
+	"componentWillReceiveProps",
+	"render",
+]);
+
+// { render() { return "scary property" } }
+const hasScaryProperties = (j, src) => {
+	const defaultExport = getDefaultExport(j, src);
+	return _.some(defaultExport.properties, property => scaryStuff.has(property.key.name));
+};
+
+// { [ 'thisIsALiteralKey': 42 ] }
+const hasLiteralKeys = (j, src) => {
+	const defaultExport = getDefaultExport(j, src);
+	return _.some(defaultExport.properties, property => property.key.type === "Literal");
+};
 
 const createNamedExport = (j, name, value) => {
 	const declaration = j.exportNamedDeclaration(
@@ -27,8 +43,13 @@ module.exports = function(file, api) {
 	const defaultExport = getDefaultExport(j, src);
 
 	// return early if no default export or if it isn't an object
-	if (!defaultExport || defaultExport.type !== "ObjectExpression") {
-		return;
+	if (
+		!defaultExport ||
+		defaultExport.type !== "ObjectExpression" ||
+		hasLiteralKeys(j, src) ||
+		hasScaryProperties(j, src)
+	) {
+		return file.source;
 	}
 
 	/*

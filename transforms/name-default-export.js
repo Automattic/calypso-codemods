@@ -15,6 +15,7 @@ const scaryStuff = new Set([
 	"componentWillUnmount",
 	"componentWillReceiveProps",
 	"render",
+	"additionalProperties",
 ]);
 
 // { render() { return "scary property" } }

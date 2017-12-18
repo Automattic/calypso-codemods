@@ -20,14 +20,26 @@ module.exports = function ( file, api ) {
 
   const actionTypes = [];
   declarationNodes.forEach(({ declaration }) => {
-    if (declaration.type !== 'VariableDeclaration' ||
-        declaration.declarations.length !== 1 ||
-        declaration.declarations[0].init.type !== 'ArrowFunctionExpression' ||
-        declaration.declarations[0].init.body.type !== 'ObjectExpression' ) {
-      return false;
+    let object;
+
+    if (declaration.type === 'VariableDeclaration' &&
+        declaration.declarations.length === 1 &&
+        declaration.declarations[0].init.type === 'ArrowFunctionExpression' &&
+        declaration.declarations[0].init.body.type === 'ObjectExpression' ) {
+      object = declaration.declarations[0].init.body;
     }
 
-    const object = declaration.declarations[0].init.body;
+    if (declaration.type === 'FunctionDeclaration' ) {
+      const returnNodes = declaration.body.body.filter(node => node.type === 'ReturnStatement');
+      if (returnNodes.length === 1 &&
+          returnNodes[0].argument.type === 'ObjectExpression') {
+        object = returnNodes[0].argument;
+      }
+    }
+
+    if (! object) {
+      return;
+    }
 
     object.properties.forEach(({ key, value }) => {
       if (! key || key.name !== 'type' || ! value.name ) {
@@ -35,8 +47,6 @@ module.exports = function ( file, api ) {
       }
       actionTypes.push(value.name);
     });
-
-    return true;
   });
 
   if ( ! actionTypes.length ) {

@@ -8,21 +8,30 @@ const docblock = require( 'jest-docblock' );
 module.exports = function ( file, api ) {
   const j = api.jscodeshift;
   const src = j( file.source );
-  const declarations = src.find( j.ImportDeclaration );
+  const exportDefaultNode = src.find( j.ExportDefaultDeclaration ).nodes()[0];
 
-  const node = declarations
-    .nodes()
-    .filter(node => node.source.value === 'state/action-types')[0];
-
-  if ( ! node ) {
+  if ( ! exportDefaultNode ||
+       exportDefaultNode.declaration.type !== 'ObjectExpression' ) {
     return;
   }
 
-  if ( ! node.specifiers[0].imported ) {
-    console.log(JSON.stringify({ [ file.path ]: '*' }));
+  const exportObject = exportDefaultNode.declaration;
+
+  // Check the "shape" of the exportObject
+
+  const actionTypes = [];
+  const isDataLayerHandler = exportObject.properties.every(({ key, value}) => {
+    if (key.type !== 'Identifier' || value.type !== 'ArrayExpression') {
+      return false;
+    }
+
+    actionTypes.push(key.name);
+    return true;
+  });
+
+  if ( ! isDataLayerHandler) {
     return;
   }
 
-  const actionTypes = node.specifiers.map( node => node.imported.name );
   console.log(JSON.stringify({ file: file.path, types: actionTypes }));
 };

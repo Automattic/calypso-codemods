@@ -10,6 +10,9 @@ module.exports = function ( file, api ) {
   const src = j( file.source );
   const exportDefaultNode = src.find( j.ExportDefaultDeclaration ).nodes()[0];
 
+  // Assumpotion: a file exports handlers exports a default object.
+  // The object is of the shape { [ ACTION_TYPE ]: [ ... ] }
+
   if ( ! exportDefaultNode ||
        exportDefaultNode.declaration.type !== 'ObjectExpression' ) {
     return;

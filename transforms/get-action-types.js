@@ -4,7 +4,7 @@
  */
 
 function output( obj ) {
-  console.log( obj );
+  console.log( JSON.stringify( obj ) );
   return;
 }
 
@@ -12,9 +12,8 @@ function getImportActionTypes( file, api ) {
 
   const j = api.jscodeshift;
   const src = j( file.source );
-  const declarations = src.find( j.ImportDeclaration );
 
-  const node = declarations
+  const node = src.find( j.ImportDeclaration )
     .nodes()
     .filter(node => node.source.value.startsWith('state/action-types'))[0];
 
@@ -30,38 +29,23 @@ function getImportActionTypes( file, api ) {
   }
 }
 
-function isActionCreator( file, api, actionTypes ) {
+function isAction( file, api, actionTypes ) {
   const j = api.jscodeshift;
   const src = j( file.source );
 
-  // Assumpotion: a file exports named arrow functions and named functions only,
-  // with no default.
+  // Assumpotion: every reference to the action type identifiers must be the value
+  // of an object property with property key named 'type'.
 
-  const declarationNodes = src.find( j.ExportNamedDeclaration ).nodes();
+  const parentNodes = src.find( j.Identifier )
+    .filter( path => actionTypes.indexOf( path.node.name ) !== -1 )
+    .map( node => node.parent )
+    .filter( path => 'ImportSpecifier' !== path.node.type )
+    .nodes();
 
-  if ( ! declarationNodes.length ||
-       src.find( j.ExportDefaultDeclaration ).nodes().length !== 0) {
-    return;
-  }
+  const isAllActionTypeProperties =
+    parentNodes.every( node => 'Property' === node.type && 'type' === node.key.name );
 
-  return declarationNodes.every(({ declaration }) => {
-    if ('VariableDeclaration' === declaration.type &&
-        1 === declaration.declarations.length &&
-        'ArrowFunctionExpression' === declaration.declarations[0].init.type &&
-        'ObjectExpression' === declaration.declarations[0].init.body.type ) {
-      return true;
-    }
-
-    if ( 'FunctionDeclaration' === declaration.type ) {
-      const returnNodes = declaration.body.body.filter(node => node.type === 'ReturnStatement');
-      if (1 === returnNodes.length &&
-          'ObjectExpression' === returnNodes[0].argument.type ) {
-        return true;
-      }
-    }
-
-    return false;
-  });
+  return isAllActionTypeProperties;
 }
 
 function isDataLayerHandler( file, api, actionTypes ) {
@@ -112,7 +96,13 @@ function isReducer( file, api, actionTypes ) {
 }
 
 function isTestFile( file, api, actionTypes ) {
-  return file.path.includes( '/test/' );
+  const j = api.jscodeshift;
+  const src = j( file.source );
+
+  // File contain any function call with function named 'test' or 'it'.
+  return !! src.find( j.CallExpression )
+    .filter( path =>
+      'test' === path.node.callee.name || 'it' === path.node.callee.name ).length;
 }
 
 module.exports = function ( file, api ) {
@@ -127,25 +117,33 @@ module.exports = function ( file, api ) {
   }
 
   let classifications = [];
-  if ( isActionCreator( file, api, actionTypes ) ) {
-    classifications.push( 'action-creator' );
+  if ( isAction( file, api, actionTypes ) ) {
+    classifications.push( 'action' );
+  } else if ( file.path.includes( '/actions' ) ) {
+    classifications.push( 'maybe-action' );
   }
 
   if ( isDataLayerHandler( file, api, actionTypes ) ) {
     classifications.push( 'data-layer-handler' );
+  } else if ( file.path.includes( '/data-layer' ) ) {
+    classifications.push( 'maybe-data-layer' );
   }
 
   if ( isReducer( file, api, actionTypes ) ) {
     classifications.push( 'reducer' );
+  } else if ( file.path.includes( '/reducer' ) ) {
+    classifications.push( 'maybe-reducer' );
   }
 
   if ( isTestFile( file, api, actionTypes ) ) {
     classifications.push( 'test' );
+  } else if ( file.path.includes( '/test' ) ) {
+    classifications.push( 'maybe-test' );
   }
 
   if ( ! classifications.length ) {
     classifications.push( 'unknown' );
   }
 
-  return output( { file: file.path, actionTypes, classifications } );
+  return output( { file: file.path, classifications, actionTypes } );
 };

@@ -14,7 +14,8 @@ module.exports = function ( file, api ) {
   // The object is of the shape { [ ACTION_TYPE ]: [ ... ] }
 
   if ( ! exportDefaultNode ||
-       exportDefaultNode.declaration.type !== 'ObjectExpression' ) {
+       exportDefaultNode.declaration.type !== 'ObjectExpression' ||
+       src.find( j.ExportNamedDeclaration ).nodes().length !== 0 ) {
     return;
   }
 

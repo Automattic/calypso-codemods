@@ -112,11 +112,8 @@ module.exports = function ( file, api ) {
     return;
   }
 
-  if ( '*' === actionTypes[0] ) {
-    return output( { file: file.path, classifications: [ 'console-dispatcher' ] } );
-  }
-
   let classifications = [];
+
   if ( isAction( file, api, actionTypes ) ) {
     classifications.push( 'action' );
   } else if ( file.path.includes( '/actions' ) ) {
@@ -126,7 +123,7 @@ module.exports = function ( file, api ) {
   if ( isDataLayerHandler( file, api, actionTypes ) ) {
     classifications.push( 'data-layer-handler' );
   } else if ( file.path.includes( '/data-layer' ) ) {
-    classifications.push( 'maybe-data-layer' );
+    classifications.push( 'maybe-data-layer-handler' );
   }
 
   if ( isReducer( file, api, actionTypes ) ) {
@@ -145,5 +142,5 @@ module.exports = function ( file, api ) {
     classifications.push( 'unknown' );
   }
 
-  return output( { file: file.path, classifications, actionTypes } );
+  return output( { file: file.path, classifications, types: actionTypes } );
 };

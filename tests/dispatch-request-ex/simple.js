@@ -1,0 +1,1 @@
+dispatchRequest( fetchProgress, updateProgress, announceError );

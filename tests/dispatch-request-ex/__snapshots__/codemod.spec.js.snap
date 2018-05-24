@@ -1,0 +1,100 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`inline-functions.js 1`] = `
+"dispatchRequestEx({
+  fetch: () => {},
+  onSuccess: function() {},
+  onError: () => undefined
+});
+
+"
+`;
+
+exports[`inline-functions-with-options.js 1`] = `
+"dispatchRequestEx({
+  fetch: () => {},
+  onSuccess: function () {},
+  onError: () => undefined
+});
+
+
+"
+`;
+
+exports[`options-variable.js 1`] = `
+"const options = {  fromApi: x => x }
+
+dispatchRequestEx({
+  fetch: fetchProgress,
+  onSuccess: updateProgress,
+  onError: announceError
+});
+
+"
+`;
+
+exports[`simple.js 1`] = `
+"dispatchRequestEx({
+  fetch: fetchProgress,
+  onSuccess: updateProgress,
+  onError: announceError
+});
+
+"
+`;
+
+exports[`with-options.js 1`] = `
+"export const fromApi = response => {
+	if ( ! response.data ) {
+		throw new Error( 'missing settings' );
+	}
+
+	return normalizeSettings( response.data );
+};
+
+const toApi = settings => filterSettingsByActiveModules( sanitizeSettings( settings ) );
+
+const receiveJetpackOnboardingSettings = ({ siteId }, settings) => {
+	updateJetpackSettings( siteId, settings );
+};
+export const requestJetpackSettings = action => {
+	const { siteId, query } = action;
+
+	return http(
+        {
+            apiVersion: '1.1',
+            method: 'GET',
+            path: '/jetpack-blogs/' + siteId + '/rest-api/',
+            query: {
+                path: '/jetpack/v4/settings/',
+                query: JSON.stringify( query ),
+                json: true,
+            },
+        },
+        action
+    );
+};
+
+export const announceRequestFailure = ({ siteId }) => {
+	const state = getState();
+	const url = getSiteUrl( state, siteId ) || getUnconnectedSiteUrl( state, siteId );
+	const noticeOptions = {
+		id: \`jpo-communication-error-\${ siteId }\`,
+	};
+
+	if ( url ) {
+		noticeOptions.button = translate( 'Visit site admin' );
+		noticeOptions.href = trailingslashit( url ) + 'wp-admin/admin.php?page=jetpack';
+	}
+
+	return errorNotice( translate( 'Something went wrong.' ), noticeOptions );
+};
+
+dispatchRequestEx({
+    fetch: requestJetpackSettings,
+    onSuccess: receiveJetpackOnboardingSettings,
+    onError: announceRequestFailure
+});
+
+"
+`;

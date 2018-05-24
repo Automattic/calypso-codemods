@@ -1,0 +1,21 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`simple.js 1`] = `
+"dispatchRequestEx({
+  fetch: fetchProgress,
+  onSuccess: updateProgress,
+  onError: announceError
+});
+
+"
+`;
+
+exports[`with-options.js 1`] = `
+"dispatchRequestEx({
+        fetch: dismissBackup,
+        onSuccess: backupSilentlyDismissed,
+        onError: backupDismissFailed
+});
+
+"
+`;

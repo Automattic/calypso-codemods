@@ -12,8 +12,14 @@ export default function transformer( file, api ) {
 				root.find( j.VariableDeclarator, { id: { name: fetch.name } } ).forEach( p => {
 					return j( p ).replaceWith( a => {
 						const fn = a.node.init;
-						const { params } = fn;
+						const { params, body } = fn;
+
 						params.shift();
+						j( body )
+							.find( j.CallExpression, { callee: { name: 'dispatch' } } )
+							.replaceWith( ret => {
+								return ret.node.arguments;
+							} );
 						return a.node;
 					} );
 				} );

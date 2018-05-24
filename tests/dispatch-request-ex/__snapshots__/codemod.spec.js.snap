@@ -1,5 +1,38 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
+exports[`inline-functions.js 1`] = `
+"dispatchRequestEx({
+  fetch: fetchProgress,
+  onSuccess: updateProgress,
+  onError: announceError
+});
+
+"
+`;
+
+exports[`inline-functions-with-options.js 1`] = `
+"dispatchRequestEx({
+  fetch: () => {},
+  onSuccess: function () {},
+  onError: () => undefined
+});
+
+
+"
+`;
+
+exports[`options-variable.js 1`] = `
+"const options = {  fromApi: x => x }
+
+dispatchRequestEx({
+  fetch: fetchProgress,
+  onSuccess: updateProgress,
+  onError: announceError
+});
+
+"
+`;
+
 exports[`simple.js 1`] = `
 "dispatchRequestEx({
   fetch: fetchProgress,

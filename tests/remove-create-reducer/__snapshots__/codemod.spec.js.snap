@@ -1,0 +1,34 @@
+// Jest Snapshot v1, https://goo.gl/fbAQLP
+
+exports[`create-reducer.js 1`] = `
+"const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
+
+const isFetchingSettings = function(state = false, action) {
+    switch (action.type) {
+    case COMPUTED_IDENTIFIER:
+        return (() => 'computed_id')(state, action);
+    case 'COMPUTED_STRING':
+        return (state => state)(state, action);
+    case \\"NON_COMPUTED_STRING\\":
+        return ((state, action) => action.thing)(state, action);
+    case \\"2\\":
+        return (() => 2)(state, action);
+    case \\"FUNCTION_HANDLER\\":
+        return function( s, a ) {
+            return s;
+        }(state, action);
+    case \\"ARROW_FUNCTION_HANDLER\\":
+        return ((state, action) => state)(state, action);
+    case \\"VARIABLE_HANDLER\\":
+        return f(state, action);
+    }
+
+    return state;
+};
+
+function f() {
+	return 'a function reducer';
+}
+
+"
+`;

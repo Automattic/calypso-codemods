@@ -1,12 +1,7 @@
-const jscodeshiftArgs = [
-	'--extensions=js,jsx',
-];
+const jscodeshiftArgs = [ '--extensions=js,jsx' ];
 
 // Used primarily by 5to6-codemod transformations
-const recastArgs = [
-	'--useTabs=true',
-	'--arrayBracketSpacing=true',
-];
+const recastArgs = [ '--useTabs=true', '--arrayBracketSpacing=true' ];
 
 const recastOptions = {
 	arrayBracketSpacing: true,
@@ -17,18 +12,19 @@ const recastOptions = {
 		objects: true,
 		arrays: true,
 		parameters: false,
-	}
+	},
 };
+
 const commonArgs = {
 	'5to6': [
 		// Recast options via 5to6
 		...recastArgs,
 	],
-	'react': [
+	react: [
 		// Recast options via react-codemod
 		`--printOptions=${ JSON.stringify( recastOptions ) }`,
 	],
-}
+};
 
 const codemodArgs = {
 	'commonjs-exports': [
@@ -62,7 +58,11 @@ const codemodArgs = {
 		...commonArgs[ 'react' ],
 		'--transform=node_modules/react-codemod/transforms/React-PropTypes-to-prop-types.js',
 	],
-}
+
+	'remove-create-reducer': [
+		'--transform=node_modules/react-codemod/transforms/remove-create-reducer.js',
+	],
+};
 
 module.exports = {
 	codemodArgs,

@@ -60,6 +60,23 @@ export default function transformer(file, api) {
           return arrowFunctionBodyToCase(j, test, fn.body);
         }
 
+        // If it's an arrow function with a deconstructed action, do magic.
+        if (
+          fn.type === "ArrowFunctionExpression" &&
+          fn.params[0].name === "state" &&
+          (fn.params.length === 2 && fn.params[1].type === "ObjectPattern")
+        ) {
+          const declaration = j.variableDeclaration("const", [
+            j.variableDeclarator(fn.params[1], j.identifier("action"))
+          ]);
+          const prevBody =
+            fn.body.type === "BlockStatement"
+              ? fn.body.body
+              : [j.returnStatement(fn.body)];
+          const body = j.blockStatement([declaration, ...prevBody]);
+          return arrowFunctionBodyToCase(j, test, body);
+        }
+
         return j.switchCase(test, [
           j.returnStatement(
             j.callExpression(actionNode.value, [
@@ -120,7 +137,15 @@ export default function transformer(file, api) {
             )
           );
 
-          greatGrandParent.insertAfter(persistenceNode);
+          if (
+            greatGrandParent.parentPath.value.type === "ExportNamedDeclaration"
+          ) {
+            // Handle `export const reducer = ...` case.
+            greatGrandParent.parentPath.insertAfter(persistenceNode);
+          } else {
+            // Handle `const reducer = ...` case.
+            greatGrandParent.insertAfter(persistenceNode);
+          }
         } else if (parent && parent.value.type === "AssignmentExpression") {
           const persistenceNode = j.expressionStatement(
             j.assignmentExpression(
@@ -149,7 +174,9 @@ export default function transformer(file, api) {
       j.ImportDeclaration,
       node =>
         node.specifiers &&
-        node.specifiers.some(s => s.imported.name === "createReducer")
+        node.specifiers.some(
+          s => s && s.imported && s.imported.name === "createReducer"
+        )
     )
     .forEach(node => {
       if (node.value.specifiers.length === 1) {

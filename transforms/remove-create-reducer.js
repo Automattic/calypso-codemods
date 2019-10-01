@@ -9,6 +9,12 @@ export default function transformer(file, api) {
   const j = api.jscodeshift;
 
   const root = j(file.source);
+  const getFirstNode = () => root.find(j.Program).get("body", 0).node;
+
+  // Save the comments attached to the first node
+  const firstNode = getFirstNode();
+  const { comments } = firstNode;
+
   root
     .find(
       j.CallExpression,
@@ -187,6 +193,12 @@ export default function transformer(file, api) {
         );
       }
     });
+
+  // If the first node has been modified or deleted, reattach the comments
+  const firstNode2 = getFirstNode();
+  if (firstNode2 !== firstNode) {
+    firstNode2.comments = comments;
+  }
 
   return root.toSource();
 }

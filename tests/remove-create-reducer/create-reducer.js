@@ -1,5 +1,5 @@
 // This comment should be preserved even if the line below is removed.
-import { createReducer } from 'state/utils';
+import { createReducer, createReducerWithValidation } from 'state/utils';
 
 const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
 
@@ -42,3 +42,7 @@ const persistentReducerObj = {
     ["DESERIALIZE"]: state => state,
   })
 };
+
+const validatedReducer = createReducerWithValidation(false, {
+	[COMPUTED_IDENTIFIER]: () => "computed_id",
+}, schema);

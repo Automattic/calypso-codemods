@@ -90,5 +90,14 @@ const persistentReducerObj = {
   }
 };
 
+const validatedReducer = withSchemaValidation(schema, (state = false, action) => {
+  switch (action.type) {
+  case COMPUTED_IDENTIFIER:
+    return \\"computed_id\\";
+  }
+
+  return state;
+});
+
 "
 `;

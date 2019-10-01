@@ -9,11 +9,6 @@ export default function transformer(file, api) {
   const j = api.jscodeshift;
 
   const root = j(file.source);
-  const getFirstNode = () => root.find(j.Program).get("body", 0).node;
-
-  // Save the comments attached to the first node
-  const firstNode = getFirstNode();
-  const { comments } = firstNode;
 
   root
     .find(
@@ -184,21 +179,19 @@ export default function transformer(file, api) {
           s => s && s.imported && s.imported.name === "createReducer"
         )
     )
-    .forEach(node => {
-      if (node.value.specifiers.length === 1) {
-        j(node).remove();
+    .forEach(nodePath => {
+      if (nodePath.value.specifiers.length === 1) {
+        const { comments } = nodePath.node;
+        const { parentPath } = nodePath;
+        const nextNode = parentPath.value[nodePath.name + 1];
+        j(nodePath).remove();
+        nextNode.comments = comments;
       } else {
-        node.value.specifiers = node.value.specifiers.filter(
+        nodePath.value.specifiers = nodePath.value.specifiers.filter(
           s => s.imported.name !== "createReducer"
         );
       }
     });
-
-  // If the first node has been modified or deleted, reattach the comments
-  const firstNode2 = getFirstNode();
-  if (firstNode2 !== firstNode) {
-    firstNode2.comments = comments;
-  }
 
   return root.toSource();
 }

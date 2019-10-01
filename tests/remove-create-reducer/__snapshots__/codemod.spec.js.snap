@@ -4,31 +4,72 @@ exports[`create-reducer.js 1`] = `
 "const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
 
 const isFetchingSettings = function(state = false, action) {
-    switch (action.type) {
-    case COMPUTED_IDENTIFIER:
-        return (() => 'computed_id')(state, action);
-    case 'COMPUTED_STRING':
-        return (state => state)(state, action);
-    case \\"NON_COMPUTED_STRING\\":
-        return ((state, action) => action.thing)(state, action);
-    case \\"2\\":
-        return (() => 2)(state, action);
-    case \\"FUNCTION_HANDLER\\":
-        return function( s, a ) {
-            return s;
-        }(state, action);
-    case \\"ARROW_FUNCTION_HANDLER\\":
-        return ((state, action) => state)(state, action);
-    case \\"VARIABLE_HANDLER\\":
-        return f(state, action);
-    }
-
+  switch (action.type) {
+  case COMPUTED_IDENTIFIER:
+    return 'computed_id';
+  case 'COMPUTED_STRING':
     return state;
+  case \\"NON_COMPUTED_STRING\\":
+    return action.thing;
+  case \\"2\\":
+    return 2;
+  case \\"FUNCTION_HANDLER\\":
+    return function( s, a ) {
+		return s;
+	}(state, action);
+  case \\"ARROW_FUNCTION_HANDLER\\":
+    return state;
+  case \\"VARIABLE_HANDLER\\":
+    return f(state, action);
+  }
+
+  return state;
 };
 
 function f() {
 	return 'a function reducer';
 }
+
+const persistentReducer = function(state = false, action) {
+  switch (action.type) {
+  case COMPUTED_IDENTIFIER:
+    return \\"computed_id\\";
+  case \\"SERIALIZE\\":
+    return state;
+  }
+
+  return state;
+};
+
+persistentReducer.hasCustomPersistence = true;
+
+const persistentReducerArray = [];
+reducerArray[0] = function(state = false, action) {
+  switch (action.type) {
+  case COMPUTED_IDENTIFIER:
+    return \\"computed_id\\";
+  case \\"DESERIALIZE\\":
+    return state;
+  }
+
+  return state;
+};
+
+reducerArray[0].hasCustomPersistence = true;
+
+const persistentReducerObj = {
+  key: // TODO: HANDLE PERSISTENCE
+  function(state = false, action) {
+    switch (action.type) {
+    case COMPUTED_IDENTIFIER:
+      return \\"computed_id\\";
+    case \\"DESERIALIZE\\":
+      return state;
+    }
+
+    return state;
+  }
+};
 
 "
 `;

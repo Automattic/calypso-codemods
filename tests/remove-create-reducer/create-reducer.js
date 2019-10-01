@@ -17,3 +17,21 @@ const isFetchingSettings = createReducer( false, {
 function f() {
 	return 'a function reducer';
 }
+
+const persistentReducer = createReducer(false, {
+  [COMPUTED_IDENTIFIER]: () => "computed_id",
+  ["SERIALIZE"]: state => state,
+});
+
+const persistentReducerArray = [];
+reducerArray[0] = createReducer(false, {
+  [COMPUTED_IDENTIFIER]: () => "computed_id",
+  ["DESERIALIZE"]: state => state,
+});
+
+const persistentReducerObj = {
+  key: createReducer(false, {
+    [COMPUTED_IDENTIFIER]: () => "computed_id",
+    ["DESERIALIZE"]: state => state,
+  })
+};

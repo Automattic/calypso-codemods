@@ -36,11 +36,13 @@ const codemodArgs = {
 		...commonArgs[ '5to6' ],
 		'--transform=node_modules/5to6-codemod/transforms/cjs.js',
 	],
+
 	'commonjs-imports-hoist': [
 		...commonArgs[ '5to6' ],
 		'--transform=node_modules/5to6-codemod/transforms/cjs.js',
 		'--hoist=true',
 	],
+
 	'named-exports-from-default': [
 		...commonArgs[ '5to6' ],
 		'--transform=node_modules/5to6-codemod/transforms/named-export-generation.js',
@@ -54,13 +56,10 @@ const codemodArgs = {
 		'--pure-component=true',
 		'--mixin-module-name="react-pure-render/mixin"', // Your days are numbered, pure-render-mixin!
 	],
+
 	'react-proptypes': [
 		...commonArgs[ 'react' ],
 		'--transform=node_modules/react-codemod/transforms/React-PropTypes-to-prop-types.js',
-	],
-
-	'remove-create-reducer': [
-		'--transform=node_modules/react-codemod/transforms/remove-create-reducer.js',
 	],
 };
 

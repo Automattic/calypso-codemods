@@ -2,9 +2,11 @@
 
 exports[`create-reducer.js 1`] = `
 "// This comment should be preserved even if the line below is removed.
+import { withSchemaValidation, withoutPersistence } from 'state/utils';
+
 const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
 
-const isFetchingSettings = function(state = false, action) {
+const isFetchingSettings = withoutPersistence((state = false, action) => {
   switch (action.type) {
   case COMPUTED_IDENTIFIER:
     return 'computed_id';
@@ -30,13 +32,13 @@ const isFetchingSettings = function(state = false, action) {
   }
 
   return state;
-};
+});
 
 function f() {
 	return 'a function reducer';
 }
 
-const persistentReducer = function(state = false, action) {
+const persistentReducer = (state = false, action) => {
   switch (action.type) {
   case COMPUTED_IDENTIFIER:
     return \\"computed_id\\";
@@ -49,7 +51,7 @@ const persistentReducer = function(state = false, action) {
 
 persistentReducer.hasCustomPersistence = true;
 
-export const exportedPersistentReducer = function(state = false, action) {
+export const exportedPersistentReducer = (state = false, action) => {
   switch (action.type) {
   case COMPUTED_IDENTIFIER:
     return \\"computed_id\\";
@@ -63,7 +65,7 @@ export const exportedPersistentReducer = function(state = false, action) {
 exportedPersistentReducer.hasCustomPersistence = true;
 
 const persistentReducerArray = [];
-reducerArray[0] = function(state = false, action) {
+reducerArray[0] = (state = false, action) => {
   switch (action.type) {
   case COMPUTED_IDENTIFIER:
     return \\"computed_id\\";
@@ -78,7 +80,7 @@ reducerArray[0].hasCustomPersistence = true;
 
 const persistentReducerObj = {
   key: // TODO: HANDLE PERSISTENCE
-  function(state = false, action) {
+  (state = false, action) => {
     switch (action.type) {
     case COMPUTED_IDENTIFIER:
       return \\"computed_id\\";

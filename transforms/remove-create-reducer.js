@@ -142,6 +142,8 @@ export default function transformer(file, api) {
 
   const root = j(file.source);
 
+  let usedWithoutPersistence = false;
+
   // Handle createReducer
   root
     .find(
@@ -159,8 +161,7 @@ export default function transformer(file, api) {
 
       const { cases, hasPersistence } = getCases(j, handlerMap);
 
-      let newNode = j.functionExpression(
-        null,
+      let newNode = j.arrowFunctionExpression(
         [
           j.assignmentPattern(j.identifier("state"), defaultState),
           j.identifier("action")
@@ -177,6 +178,11 @@ export default function transformer(file, api) {
 
       if (hasPersistence) {
         newNode = handlePersistence(j, createReducerPath, newNode);
+      } else {
+        usedWithoutPersistence = true;
+        newNode = j.callExpression(j.identifier("withoutPersistence"), [
+          newNode
+        ]);
       }
 
       createReducerPath.replace(newNode);
@@ -259,6 +265,18 @@ export default function transformer(file, api) {
           );
         }
       }
+
+      if (usedWithoutPersistence) {
+        if (!filtered.find(s => s.imported.name === "withoutPersistence")) {
+          filtered.push(
+            j.importSpecifier(
+              j.identifier("withoutPersistence"),
+              j.identifier("withoutPersistence")
+            )
+          );
+        }
+      }
+
       if (filtered.length === 0) {
         const { comments } = nodePath.node;
         const { parentPath } = nodePath;

@@ -1,3 +1,4 @@
+// This comment should be preserved even if the line below is removed.
 import { createReducer } from 'state/utils';
 
 const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
@@ -11,6 +12,7 @@ const isFetchingSettings = createReducer( false, {
 		return s;
 	},
 	ARROW_FUNCTION_HANDLER: ( state, action ) => state,
+	ARROW_FUNCTION_WITH_DESTRUCT: ( state, { thing } ) => thing,
 	VARIABLE_HANDLER: f,
 } );
 
@@ -19,6 +21,11 @@ function f() {
 }
 
 const persistentReducer = createReducer(false, {
+  [COMPUTED_IDENTIFIER]: () => "computed_id",
+  ["SERIALIZE"]: state => state,
+});
+
+export const exportedPersistentReducer = createReducer(false, {
   [COMPUTED_IDENTIFIER]: () => "computed_id",
   ["SERIALIZE"]: state => state,
 });

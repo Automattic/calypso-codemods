@@ -1,7 +1,8 @@
 // Jest Snapshot v1, https://goo.gl/fbAQLP
 
 exports[`create-reducer.js 1`] = `
-"const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
+"// This comment should be preserved even if the line below is removed.
+const COMPUTED_IDENTIFIER = 'COMPUTED_IDENTIFIER';
 
 const isFetchingSettings = function(state = false, action) {
   switch (action.type) {
@@ -19,6 +20,11 @@ const isFetchingSettings = function(state = false, action) {
 	}(state, action);
   case \\"ARROW_FUNCTION_HANDLER\\":
     return state;
+  case \\"ARROW_FUNCTION_WITH_DESTRUCT\\":
+    {
+      const { thing } = action;
+      return thing;
+    }
   case \\"VARIABLE_HANDLER\\":
     return f(state, action);
   }
@@ -42,6 +48,19 @@ const persistentReducer = function(state = false, action) {
 };
 
 persistentReducer.hasCustomPersistence = true;
+
+export const exportedPersistentReducer = function(state = false, action) {
+  switch (action.type) {
+  case COMPUTED_IDENTIFIER:
+    return \\"computed_id\\";
+  case \\"SERIALIZE\\":
+    return state;
+  }
+
+  return state;
+};
+
+exportedPersistentReducer.hasCustomPersistence = true;
 
 const persistentReducerArray = [];
 reducerArray[0] = function(state = false, action) {

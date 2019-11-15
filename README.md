@@ -1,3 +1,11 @@
+# This repository has moved!
+
+It is now part of the [Calypso](https://github.com/Automattic/wp-calypso/tree/master/packages/calypso-codemods) repository.
+
+The published npm package will continue to be available as before, no changes necessary!
+
+---
+
 # Calypso Codemods
 
 [![Build Status](https://travis-ci.org/Automattic/calypso-codemods.svg?branch=master)](https://travis-ci.org/Automattic/calypso-codemods)

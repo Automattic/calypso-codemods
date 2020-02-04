@@ -20,13 +20,13 @@
 	},
 	"homepage": "https://github.com/Automattic/calypso-codemods#readme",
 	"devDependencies": {
-		"jest": "^23.2.0",
-		"prettier": "^1.13.6"
+		"jest": "^24.9.0",
+		"prettier": "npm:wp-prettier@1.18.2"
 	},
 	"dependencies": {
-		"5to6-codemod": "^1.7.1",
-		"jscodeshift": "^0.5.1",
-		"lodash": "^4.17.10",
+		"5to6-codemod": "^1.8.0",
+		"jscodeshift": "^0.6.4",
+		"lodash": "^4.17.15",
 		"react-codemod": "github:reactjs/react-codemod"
 	},
 	"jest": {
